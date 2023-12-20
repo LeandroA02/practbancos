@@ -2,8 +2,11 @@ package com.example.practsem5;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -16,27 +19,47 @@ import WebServices.WebService;
 
 public class MainActivity
         extends AppCompatActivity
-        implements Asynchtask{
+        implements Asynchtask {
 
-        @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
     }
-    public void clickLogin(View v){
+    public void Enviar(View view) {
+        //Creamos el Intent
+        Intent intent = new Intent(MainActivity.this , MainActivity2.class);
+//Creamos la información a pasar entre actividades - Pares Key-Value
+        Bundle b = new Bundle();
+//Añadimos la información al intent
+        intent.putExtras(b);
+// Iniciamos la nueva actividad
+        startActivity(intent);
+
+    }
+    public void clicklogin(View v){
         Bundle bundle = this.getIntent().getExtras();
         Map<String, String> datos = new HashMap<String, String>();
+        EditText txtusur = findViewById(R.id.txtUsuario);
+        EditText txtclave = findViewById(R.id.txtClave);
         WebService ws= new WebService(
-                "https://revistas.uteq.edu.ec/ws/login.php?usr=cristian&pass=123"
-                        + bundle.getString("Usr") + "&pass=" + bundle.getString("clave"),
+                "https://revistas.uteq.edu.ec/ws/login.php?usr=" + txtusur.getText().toString() +
+                        "&pass=" + txtclave.getText().toString(),
                 datos, MainActivity.this, MainActivity.this);
-        ws.execute("GET");
+        ws.execute("GET");//
+
     }
 
     @Override
     public void processFinish(String result) throws JSONException {
-        TextView txtRespuesta = findViewById(R.id. txtRespuesta);
-        txtRespuesta.setText(result);
+        Intent intent = new Intent(this, MainActivity.class);
+        TextView txtrespuesta = findViewById(R.id.txtRespuesta);
+        if (result.equals("Login Correcto")) {
+        }
+        else {
+            startActivity(intent);
+        }
 
     }
 }
+
